@@ -15,7 +15,9 @@ export const supplierColumnIndexs = {
   SBC_description: 'J',
 };
 
-export const supplierColumnIndexsReverse = Object.fromEntries(Object.entries(supplierColumnIndexs).map(([key, value]) => [value, key]));
+export const supplierColumnIndexsReverse = (
+  Object.fromEntries(Object.entries(supplierColumnIndexs).map(([key, value]) => [value, key]))
+);
 
 // For excel made by yourself
 export const yourColumnIndexs = {
@@ -25,8 +27,8 @@ export const yourColumnIndexs = {
   TK_description: 'D',
   TK_partNumber: 'E',
   supplier: 'F',
-  color: 'G'
-}
+  color: 'G',
+};
 
 // The supplier output straight away
 export const bannedSupplier = {
@@ -36,7 +38,7 @@ export const bannedSupplier = {
 
 export const bannerOrSpecialPartNumber = {
   NONE: 'NONE',
-  MYLAR: 'MYLAR'
+  MYLAR: 'MYLAR',
 };
 
 export const exportingConfig = {

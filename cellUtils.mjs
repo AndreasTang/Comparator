@@ -46,7 +46,7 @@ export const divdeToEnd = (number, divider = 26, word = '') => {
 
 export const keyConverter = (number) => {
   if (number <= 0) {
-    return ''
+    return '';
   }
 
   const words = divdeToEnd(number);
@@ -68,14 +68,18 @@ export const keyConverterReverse = (word = '') => {
   const maxPower = wordLength - 1;
   const finalNumber = [...word].reduce((final, current, index) => {
     const number = wordToNumberObj[current] * (26 ** (maxPower - index));
-    
+
     return final + number;
   }, 0);
 
   return finalNumber;
-}
+};
 
-export const reverseWordToNumber = (word) => isNaN(word) ? Number(keyConverterReverse(word)) : word;
+export const reverseWordToNumber = (word) => {
+  // eslint-disable-next-line no-restricted-globals
+  const reversed = isNaN(word) ? Number(keyConverterReverse(word)) : word;
+  return reversed;
+};
 
 export const normalizePositionToNumber = (from, to) => {
   const { column: fromColumn, row: fromRow } = from;
@@ -125,8 +129,10 @@ export const getCells = (based, i, convertedFrom, convertedTo, isSplite) => {
     case 'row':
       return getCellKeysInRow(fromRow + i, fromColumn, toColumn, isSplite);
     default:
-      return console.log(chalk.red('Error, no based provided, make sure you provide either "col" or "row" as based in getDataByRange function config'));
-  };
+      return console.log(
+        chalk.red('Error, no based provided, make sure you provide either "col" or "row" as based in getDataByRange function config'),
+      );
+  }
 };
 
 // get all cell keys from a select range
@@ -165,7 +171,7 @@ export const getCellKeysInRange = (from, to, config) => {
     if (mix) {
       allCells = [...allCells, ...cells];
     } else {
-      allCells = allCells.length ? [...allCells, cells]: [cells];
+      allCells = allCells.length ? [...allCells, cells] : [cells];
     }
   }
 
@@ -205,7 +211,7 @@ export const sortRange = (from, to) => {
   const [sfc, stc] = nfc > ntc ? [ntc, nfc] : [nfc, ntc];
   const [sfr, str] = nfr > ntr ? [ntr, nfr] : [nfr, ntr];
 
-  return [[sfc, sfr], [stc, str]]
+  return [[sfc, sfr], [stc, str]];
 };
 
 export const selectRange = (from, to) => {
@@ -215,6 +221,6 @@ export const selectRange = (from, to) => {
 
   return {
     from: { column: fc, row: fr },
-    to: { column: tc, row: tr},
+    to: { column: tc, row: tr },
   };
 };

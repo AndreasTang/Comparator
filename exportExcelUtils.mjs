@@ -1,5 +1,5 @@
 import ExcelJS from 'exceljs';
-import { exportingConfig } from './config.mjs'
+import { exportingConfig } from './config.mjs';
 
 export const setStyle = (worksheet, config) => {
   const { titleWidths, columnAlignment } = config;
@@ -18,7 +18,7 @@ export const writeTitle = (worksheet, config) => {
     const cell = worksheet.getRow(startRow).getCell(index + 1);
     cell.value = title;
     cell.font = titleCellFont;
-  })
+  });
 };
 
 export const writeDatas = (datas, worksheet, startRow, color) => {
@@ -26,13 +26,13 @@ export const writeDatas = (datas, worksheet, startRow, color) => {
     const [posAndDataPairs, result] = data;
     const targetRowIndex = posAndDataPairs[0][0][1];
     const rowDatas = posAndDataPairs.reduce((final, current) => final.concat(current[1]), []);
-    const newRowDatas = [result, targetRowIndex, ...rowDatas]
+    const newRowDatas = [result, targetRowIndex, ...rowDatas];
 
     newRowDatas.forEach((newData, colIndex) => {
       const cell = worksheet.getRow(rowIndex + +startRow).getCell(colIndex + 1);
       cell.value = newData;
       cell.font = { color: { argb: color } };
-    })
+    });
   });
 };
 
@@ -64,7 +64,6 @@ export const createFile = async (datas) => {
   if (failed.length) {
     writeDatas(failed, worksheet, startRow + sucess.length + 3, failedColor);
   }
-
 
   await workbook.xlsx.writeFile(`${workbookName}.xlsx`);
 

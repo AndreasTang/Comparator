@@ -4,11 +4,11 @@ import {
   bannedSupplier,
   bannerOrSpecialPartNumber,
   startRow,
-} from './config.mjs'
+} from './config.mjs';
 import {
   keyConverter,
   keyConverterReverse,
-} from './cellUtils.mjs'
+} from './cellUtils.mjs';
 
 const {
   supplier: s_supplier,
@@ -35,7 +35,7 @@ export const getSortedColumn = (cols) => {
 export const getSortedColumnMapping = (cols) => {
   const sorted = getSortedColumn(cols);
   const mapping = sorted.reduce((final, current, index) => {
-    const [key, col] = current;
+    const [, col] = current;
 
     final[keyConverter(col)] = index;
 
@@ -76,8 +76,8 @@ export const addConvertRowMapping = (currentData, targetData, mappingData) => {
 };
 
 export const removeTitle = (supplierDatas, yourDatas) => {
-  const [s_title, ...supplierData] = supplierDatas;
-  const [y_title, ...yourData] = yourDatas;
+  const [, ...supplierData] = supplierDatas;
+  const [, ...yourData] = yourDatas;
 
   return [supplierData, yourData];
 };
@@ -97,7 +97,7 @@ export const processBannedSupplier = (datas, mapping) => {
     return final;
   }, [[], []]);
 
-  return [passed, done.concat(banned)]
+  return [passed, done.concat(banned)];
 };
 
 export const processBannedPartNumber = (datas, mapping) => {
@@ -132,6 +132,7 @@ export const matchingPartNumber = (supplierDatas, yourDatas, colMapping) => {
     const [match, unMatched, rowExchangeMapping] = final;
     const [, partNumber] = getDatasByMapping(current, supplierColMapping, s_SBC_partNumber);
 
+    // eslint-disable-next-line no-restricted-globals
     if (!isNaN(partNumber)) {
       if (partNumberMapping[partNumber] !== undefined) {
         addConvertRowMapping(current, partNumberMapping[partNumber], rowExchangeMapping);
@@ -161,13 +162,11 @@ export const matchingPartNumber = (supplierDatas, yourDatas, colMapping) => {
       } else {
         unMatched.push([current, 'no data']);
       }
+    } else if (subPartNumberMapping[partNumber] !== undefined) {
+      addConvertRowMapping(current, subPartNumberMapping[partNumber], rowExchangeMapping);
+      match.push(current);
     } else {
-      if (subPartNumberMapping[partNumber] !== undefined) {
-        addConvertRowMapping(current, subPartNumberMapping[partNumber], rowExchangeMapping);
-        match.push(current)
-      } else {
-        unMatched.push([current, 'no data']);
-      }
+      unMatched.push([current, 'no data']);
     }
     return final;
   }, [[], [], {}]);
@@ -186,14 +185,14 @@ export const matchingDescirption = (supplierDatas, yourDatas, colMapping, config
     const targetRow = rowExchangeMapping[currentRow] - startRow;
     const targetColumn = yourColMapping[y_SBC_description];
     const targetDataPair = (based === 'row' ? yourDatas[targetRow][targetColumn] : yourDatas[targetColumn][targetRow]) || [];
-    const targetData = targetDataPair[1] || ''
+    const targetData = targetDataPair[1] || '';
 
     const [, description] = getDatasByMapping(current, supplierColMapping, s_SBC_description) || '';
 
     if (targetData.trim() === description.trim()) {
       match.push(current);
     } else {
-      unMatched.push([current, 'description ERROR'])
+      unMatched.push([current, 'description ERROR']);
     }
 
     return final;
@@ -213,14 +212,14 @@ export const matchingSupplier = (supplierDatas, yourDatas, colMapping, config) =
     const targetRow = rowExchangeMapping[currentRow] - startRow;
     const targetColumn = yourColMapping[y_supplier];
     const targetDataPair = (based === 'row' ? yourDatas[targetRow][targetColumn] : yourDatas[targetColumn][targetRow]) || [];
-    const targetData = targetDataPair[1] || ''
+    const targetData = targetDataPair[1] || '';
 
     const [, supplier] = getDatasByMapping(current, supplierColMapping, s_supplier) || '';
 
     if (targetData.trim().toLowerCase().includes(supplier.trim().toLowerCase())) {
       match.push(current);
     } else {
-      unMatched.push([current, 'Supplier ERROR'])
+      unMatched.push([current, 'Supplier ERROR']);
     }
 
     return final;
@@ -237,7 +236,7 @@ export const addMatchingSucessText = (datas) => {
 };
 
 export const addSucessedTK = (datas, yourDatas, colMapping, config) => {
-  const [supplierColMapping, yourColMapping] = colMapping;
+  const [, yourColMapping] = colMapping;
   const [unDone, done, rowExchangeMapping] = datas;
   const { based } = config;
 
@@ -247,7 +246,7 @@ export const addSucessedTK = (datas, yourDatas, colMapping, config) => {
     const TKDescriptionColumn = yourColMapping[TK_description];
     const TKPartNumberColumn = yourColMapping[TK_partNumber];
     const TKD_dataPair = (based === 'row' ? yourDatas[targetRow][TKDescriptionColumn] : yourDatas[TKDescriptionColumn][targetRow]) || [];
-    const TKPN_dataPair = (based === 'row' ? yourDatas[targetRow][TKPartNumberColumn] : yourDatas[targetColumn][TKPartNumberColumn]) || [];
+    const TKPN_dataPair = (based === 'row' ? yourDatas[targetRow][TKPartNumberColumn] : yourDatas[TKPartNumberColumn][TKPartNumberColumn]) || [];
     // const aaa = current.concat([TKD_dataPair, TKPN_dataPair])
 
     return current.concat([TKPN_dataPair, TKD_dataPair]);

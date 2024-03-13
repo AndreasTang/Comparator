@@ -12,7 +12,7 @@ import {
 } from './cellUtils.mjs';
 import {
   generateResponse,
-} from './filterUtils.mjs'
+} from './filterUtils.mjs';
 import {
   createFile,
 } from './exportExcelUtils.mjs';
@@ -25,7 +25,7 @@ const {
 const {
   filePath: yourFilePath,
   worksheetName: yourWorksheetName,
-} = yourWorkbookConfigs
+} = yourWorkbookConfigs;
 
 const {
   supplier: s_supplier,
@@ -47,10 +47,10 @@ await yourWorkbook.xlsx.readFile(yourFilePath);
 const supplierWorksheet = supplierWorkBook.getWorksheet(supplierWorksheetName);
 const yourWorkSheet = yourWorkbook.getWorksheet(yourWorksheetName);
 
-const { rowCount: sRowCount, columnCount: sColumnCount } = supplierWorksheet;
-const { rowCount: yRowCount, columnCount: yColumnCount } = yourWorkSheet;
+const { rowCount: sRowCount } = supplierWorksheet;
+const { rowCount: yRowCount } = yourWorkSheet;
 
-// define data range in supplier excel worksheet 
+// define data range in supplier excel worksheet
 const supplierDataPosition = selectRange([s_supplier, startRow], [s_SBC_description, sRowCount]);
 const yourDataPosition = selectRange([y_SBC_partNumber, startRow], [y_supplier, yRowCount]);
 
@@ -63,4 +63,3 @@ const final = generateResponse(allSupplierDatas, yourSupplierDatas, { based: 'ro
 createFile(final);
 // const datas = writeDatas(final[1]);
 // console.log(datas);
-
