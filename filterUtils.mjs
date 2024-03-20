@@ -247,7 +247,6 @@ export const addSucessedTK = (datas, yourDatas, colMapping, config) => {
     const TKPartNumberColumn = yourColMapping[TK_partNumber];
     const TKD_dataPair = (based === 'row' ? yourDatas[targetRow][TKDescriptionColumn] : yourDatas[TKDescriptionColumn][targetRow]) || [];
     const TKPN_dataPair = (based === 'row' ? yourDatas[targetRow][TKPartNumberColumn] : yourDatas[TKPartNumberColumn][TKPartNumberColumn]) || [];
-    // const aaa = current.concat([TKD_dataPair, TKPN_dataPair])
 
     return current.concat([TKPN_dataPair, TKD_dataPair]);
   });
@@ -263,7 +262,7 @@ export const mergeDuplicated = (datas, colMapping) => {
     const [unique, existed] = final;
     const [, partNumber] = getDatasByMapping(current, supplierColMapping, s_SBC_partNumber);
 
-    if (existed[partNumber.trim()]) {
+    if (!existed[partNumber.trim()]) {
       unique.push(current);
     }
 
@@ -284,7 +283,7 @@ export const mergeDuplicated = (datas, colMapping) => {
     const trimedSupplier = supplier ? supplier.trim() : '';
     const allText = `${trimedPartNumber}+${trimedDescription}+${trimedSupplier}`
 
-    if (existed[allText]) {
+    if (!existed[allText]) {
       unique.push(current);
     }
 
