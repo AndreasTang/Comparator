@@ -255,6 +255,47 @@ export const addSucessedTK = (datas, yourDatas, colMapping, config) => {
   return [sucessWithTK, done, rowExchangeMapping];
 };
 
+export const mergeDuplicated = (datas, colMapping) => {
+  const [unDone, done, rowExchangeMapping] = datas;
+  const [supplierColMapping] = colMapping;
+
+  const [unDoneUnique] = unDone.reduce((final, current) => {
+    const [unique, existed] = final;
+    const [, partNumber] = getDatasByMapping(current, supplierColMapping, s_SBC_partNumber);
+
+    if (existed[partNumber.trim()]) {
+      unique.push(current);
+    }
+
+    existed[partNumber] = partNumber;
+
+    return final;
+  }, [[], {}]);
+
+  const [doneUnique] = done.reduce((final, current) => {
+    const [unique, existed] = final;
+
+    const [, partNumber] = getDatasByMapping(current[0], supplierColMapping, s_SBC_partNumber);
+    const [, description] = getDatasByMapping(current[0], supplierColMapping, s_SBC_description);
+    const [, supplier] = getDatasByMapping(current[0], supplierColMapping, s_supplier);
+    
+    const trimedPartNumber = partNumber ? partNumber.trim() : '';
+    const trimedDescription = description ? description.trim() : '';
+    const trimedSupplier = supplier ? supplier.trim() : '';
+    const allText = `${trimedPartNumber}+${trimedDescription}+${trimedSupplier}`
+
+    if (existed[allText]) {
+      unique.push(current);
+    }
+
+    existed[allText] = allText;
+
+    return final;
+  }, [[], {}]);
+
+  return [unDoneUnique, doneUnique, rowExchangeMapping];
+};
+
 export const generateResponse = (supplierDatas, yourDatas, config) => {
   const supplierColMapping = getSortedColumnMapping(supplierColumnIndexs);
   const yourColMapping = getSortedColumnMapping(yourColumnIndexs);
@@ -265,7 +306,8 @@ export const generateResponse = (supplierDatas, yourDatas, config) => {
   const filteredByMatchingPartNumber = matchingPartNumber(filteredByPartNumber, yourDatas, colMapping);
   const filteredByMatchingDescirption = matchingDescirption(filteredByMatchingPartNumber, yourDatas, colMapping, config);
   const filteredByMatchingSupplier = matchingSupplier(filteredByMatchingDescirption, yourDatas, colMapping, config);
-  const final = addSucessedTK(filteredByMatchingSupplier, yourDatas, colMapping, config);
+  const merged = mergeDuplicated(filteredByMatchingSupplier, colMapping);
+  const final = addSucessedTK(merged, yourDatas, colMapping, config);
   const result = addMatchingSucessText(final);
 
   return result;

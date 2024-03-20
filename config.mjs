@@ -1,6 +1,6 @@
 export const supplierWorkBookConfigs = {
   filePath: '活頁簿1.xlsx',
-  worksheetName: '工作表1',
+  worksheetName: 'UPLOAD',
 };
 
 export const yourWorkbookConfigs = {
